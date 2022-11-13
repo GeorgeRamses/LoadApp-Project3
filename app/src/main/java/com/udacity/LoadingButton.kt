@@ -8,12 +8,12 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
-import androidx.core.content.withStyledAttributes
 import kotlinx.android.synthetic.main.content_main.view.*
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.properties.Delegates
 import androidx.core.content.withStyledAttributes as withStyledAttributes1
+import androidx.core.content.withStyledAttributes as withStyledAttributes2
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -38,7 +38,7 @@ class LoadingButton @JvmOverloads constructor(
 
     init {
         isClickable = true
-        context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
+        context.withStyledAttributes2(attrs, R.styleable.LoadingButton) {
             background_Color = getColor(R.styleable.LoadingButton_backgroundColor, 0)
             text_Color = getColor(R.styleable.LoadingButton_textColor, 0)
         }
