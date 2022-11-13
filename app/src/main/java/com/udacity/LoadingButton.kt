@@ -25,6 +25,7 @@ class LoadingButton @JvmOverloads constructor(
     private var pointPosition = PointF(0f, 0f)
     private var valueAnimator = ValueAnimator()
     private var position = 0f
+    private var markerRadius = 0f
     val mText = "Downlod"
     val bound = Rect()
     val path = Path()
@@ -40,8 +41,17 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         super.onTouchEvent(event)
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            markerRadius = heightSize.toFloat() / 4
+            position = 1f
+            pointPosition.calculateXY(position, markerRadius)
+            path.reset()
+            path.moveTo(pointPosition.x, pointPosition.y)
+            currentX = pointPosition.x
+            currentY = pointPosition.y
+        }
         animateFun()
         return true
     }
@@ -49,7 +59,6 @@ class LoadingButton @JvmOverloads constructor(
     private val paint = Paint().apply {
         isAntiAlias = true
         textAlign = Paint.Align.CENTER
-        setTypeface(Typeface.DEFAULT)
         textSize = 70F
     }
 
@@ -58,7 +67,7 @@ class LoadingButton @JvmOverloads constructor(
         val textWidth = bound.width()
         val startAngle = Math.PI * (9 / 8.0)
         val angle = startAngle + position * (Math.PI / 360)
-        x = (radius * cos(angle)).toFloat() + (width + textWidth) / 2 + radius * 2
+        x = (radius * cos(angle)).toFloat() + (width + textWidth) / 2 + radius
         y = (radius * sin(angle)).toFloat() + height / 2
     }
 
@@ -75,7 +84,7 @@ class LoadingButton @JvmOverloads constructor(
             interpolator = LinearInterpolator()
             addUpdateListener {
                 dx = it.animatedValue as Float
-                position += 0.5f
+                position += 1.0f
                 invalidate()
             }
             start()
@@ -92,17 +101,9 @@ class LoadingButton @JvmOverloads constructor(
         paint.color = context.getColor(R.color.colorPrimaryDark)
         canvas.drawRect(0f, 0f, widthSize * dx, heightSize.toFloat(), paint)
 
-        val markerRadius = heightSize.toFloat() / 4
         pointPosition.calculateXY(position, markerRadius)
-
-        if (position <= 1) {
-            currentX = pointPosition.x
-            currentY = pointPosition.y
-        }
-
-        path.moveTo(currentX, currentY)
         path.quadTo(
-            currentX + markerRadius,
+            currentX,
             currentY,
             pointPosition.x,
             pointPosition.y
