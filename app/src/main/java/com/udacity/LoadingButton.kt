@@ -1,25 +1,25 @@
 package com.udacity
 
-import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.text.Layout.Alignment
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
+import androidx.core.content.withStyledAttributes
 import kotlinx.android.synthetic.main.content_main.view.*
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.properties.Delegates
+import androidx.core.content.withStyledAttributes as withStyledAttributes1
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+    private var background_Color = 0
+    private var text_Color = 0
     private var widthSize = 0
     private var heightSize = 0
     private var pointPosition = PointF(0f, 0f)
@@ -38,6 +38,10 @@ class LoadingButton @JvmOverloads constructor(
 
     init {
         isClickable = true
+        context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
+            background_Color = getColor(R.styleable.LoadingButton_backgroundColor, 0)
+            text_Color = getColor(R.styleable.LoadingButton_textColor, 0)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -94,7 +98,7 @@ class LoadingButton @JvmOverloads constructor(
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.GREEN)
+        canvas.drawColor(background_Color)
         val x = widthSize.toFloat() / 2
         val y = (heightSize.toFloat() + bound.height()) / 2
 
@@ -111,10 +115,10 @@ class LoadingButton @JvmOverloads constructor(
         paint.color = Color.YELLOW
         canvas.drawPath(path, paint)
         if (dx == 1f) {
-            canvas.drawColor(Color.GREEN)
+            canvas.drawColor(background_Color)
             path.reset()
         }
-        paint.color = Color.WHITE
+        paint.color = text_Color
         canvas.drawText(mText, x, y, paint)
         invalidate()
     }
